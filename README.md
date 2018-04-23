@@ -97,11 +97,11 @@ Please refer to the [Clairvoyante](https://github.com/aquaskyline/Clairvoyante) 
 
 ## Understand the output
 
-There are seven columns in the output:  
+There are nine columns in the output:  
 
-1 | 2 | 3 | 4 | 5 | 6 | 7 |
+1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
 --- | --- | --- | --- | --- | --- | --- |
-Validation result | Chromosome | Position | Reference Allele | Alternative Allele | Genotype One |  Genotype Two |
+Validation result | Skyhawk Quality | Chromosome | Position | Reference Allele | Input Alternative Allele | Input Genotype | Skyhawk Alternative Allele | Skyhawk Genotype
 
 * There are four types of validation result:
  * M: Validated variant

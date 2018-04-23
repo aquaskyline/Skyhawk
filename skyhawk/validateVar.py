@@ -182,7 +182,7 @@ def Run(args):
         multi = 0
         if p1 == 1 and p2 == 2:
             multi = 1
-        return (multi, "\t".join([row[0], row[1], row[3], row[4], str(p1), str(p2)]))
+        return (multi, row[3], row[5], "\t".join([row[4], "/".join([str(p1), str(p2)])]))
 
     preChr = prePos = ""
     val_fh = open(val_fn, "w")
@@ -192,11 +192,11 @@ def Run(args):
     for output in iterAllOutputs:
         outputA = output.strip().split()
         while inputA[0] != outputA[0] or inputA[1] < outputA[1]:
-            multi, pi = ProcessVCFRecord(inputA)
+            multi, refAllele, _, pi = ProcessVCFRecord(inputA)
             if multi == 1:
-                print >> val_fh, "B\t%s" % (pi)
+                print >> val_fh, "B\t0\t%s\t%s" % (refAllele, pi)
             else:
-                print >> val_fh, "S\t%s" % (pi)
+                print >> val_fh, "S\t0\t%s\t%s" % (refAllele, pi)
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
@@ -206,14 +206,14 @@ def Run(args):
                     preChr = inputA[0]; prePos = inputA[1]
                     break;
         if inputA[0] == outputA[0] and inputA[1] == outputA[1]:
-            multi, pi = ProcessVCFRecord(inputA)
-            _, po = ProcessVCFRecord(outputA)
+            multi, refAllele, _, pi = ProcessVCFRecord(inputA)
+            _, _, qual, po = ProcessVCFRecord(outputA)
             if multi == 1:
-                print >> val_fh, "B\t%s\t%s" % (pi, po)
+                print >> val_fh, "B\t0\t%s\t%s" % (refAllele, pi)
             elif pi == po:
-                print >> val_fh, "M\t%s\t%s" % (pi, po)
+                print >> val_fh, "M\t%s\t%s\t%s\t%s" % (qual, refAllele, pi, po)
             else:
-                print >> val_fh, "X\t%s\t%s" % (pi, po)
+                print >> val_fh, "X\t%s\t%s\t%s\t%s" % (qual, refAllele, pi, po)
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
