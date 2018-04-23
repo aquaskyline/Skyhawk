@@ -78,7 +78,7 @@ tar -xf testingData.tar
 
 ```shell
 python ./skyhawk/validateVar.py \
-       --chkpnt_fn ./trainedModels/fullv3-illumina-novoalign-hg001+hg002-hg38/learningRate1e-3.epoch500
+       --chkpnt_fn ./trainedModels/fullv3-illumina-novoalign-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200
        --ref_fn ../testingData/chr21/chr21.fa
        --bam_fn ../testingData/chr21/chr21.bam
        --vcf_fn ../testingData/chr21/chr21.vcf
@@ -100,7 +100,7 @@ Please refer to the [Clairvoyante](https://github.com/aquaskyline/Clairvoyante) 
 There are nine columns in the output:  
 
 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
---- | --- | --- | --- | --- | --- | --- |
+--- | --- | --- | --- | --- | --- | --- | --- | --- |
 Validation result | Skyhawk Quality | Chromosome | Position | Reference Allele | Input Alternative Allele | Input Genotype | Skyhawk Alternative Allele | Skyhawk Genotype
 
 * There are four types of validation result:
