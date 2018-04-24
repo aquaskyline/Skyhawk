@@ -9,7 +9,7 @@ Email: rbluo@cs.hku.hk
 ```shell
 git clone https://github.com/aquaskyline/Skyhawk.git
 cd Skyhawk
-curl http://www.bio8.cs.hku.hk/skyhawkModels.tgz | tar -jxf -
+curl http://www.bio8.cs.hku.hk/skyhawkModels.tbz | tar -jxf -
 ```
 
 ***
@@ -134,12 +134,10 @@ Folder | Tech | Aligner | Ref | Sample |
 --- |:---:|:---:|:---:|:---:|
 `fullv3-illumina-novoalign-hg001+hg002+hg003+hg004+hg005-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143+NA24631 |
 `fullv3-illumina-novoalign-hg001+hg002+hg003+hg004+hg005-hg19` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg19 | NA12878+NA24385+NA24149+NA24143+NA24631 |
+`fullv3-illumina-novoalign-hg001+hg002+hg003+hg004-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143 |
 `fullv3-illumina-novoalign-hg001+hg002-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878+NA24385 |
-`fullv3-illumina-novoalign-hg001+hg002-hg19` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg19 | NA12878+NA24385 |
 `fullv3-illumina-novoalign-hg001-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878 |
 `fullv3-illumina-novoalign-hg002-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA24385 |
-`fullv3-illumina-novoalign-hg001-hg19` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg19 | NA12878 |
-`fullv3-illumina-novoalign-hg002-hg19` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg19 | NA24385 |
 
 <sup>1</sup> Also using Illumina TruSeq (LT) DNA PCR-Free Sample Prep Kits, *Zook et al. Extensive sequencing of seven human genomes to characterize benchmark reference materials. 2016*  
 
