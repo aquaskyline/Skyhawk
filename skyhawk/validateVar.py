@@ -149,6 +149,7 @@ def Run(args):
             continue
         if rowA[0] != previousCtg:
             if len(inputs) != 0:
+                print >> sys.stderr, "Working on chromosome: %s" % (previousCtg)
                 RunOnACtg(previousCtg, inputs, outputs)
                 for item in outputs:
                     allOutputs.append(item)
@@ -157,6 +158,7 @@ def Run(args):
             previousCtg = rowA[0]
         inputs.append(row)
         allInputs.append(row)
+    print >> sys.stderr, "Working on chromosome: %s" % (previousCtg)
     RunOnACtg(previousCtg, inputs, outputs)
     for item in outputs:
         allOutputs.append(item)
@@ -191,38 +193,38 @@ def Run(args):
     inputA = next(iterAllInputs).strip().split()
     for output in iterAllOutputs:
         outputA = output.strip().split()
-        while inputA[0] != outputA[0] or inputA[1] < outputA[1]:
+        while inputA[0] != outputA[0] or int(inputA[1]) < int(outputA[1]):
             multi, refAllele, _, pi = ProcessVCFRecord(inputA)
             if multi == 1:
-                print >> val_fh, "B\t0\t%s\t%s" % (refAllele, pi)
+                print >> val_fh, "B\t0\t%s\t%d\t%s\t%s" % (inputA[0], int(inputA[1]), refAllele, pi)
             else:
-                print >> val_fh, "S\t0\t%s\t%s" % (refAllele, pi)
+                print >> val_fh, "S\t0\t%s\t%d\t%s\t%s" % (inputA[0], int(inputA[1]),refAllele, pi)
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
                 except StopIteration:
                     break
-                if inputA[0] != preChr or inputA[1] != prePos:
-                    preChr = inputA[0]; prePos = inputA[1]
+                if inputA[0] != preChr or int(inputA[1]) != prePos:
+                    preChr = inputA[0]; prePos = int(inputA[1])
                     break;
-        if inputA[0] == outputA[0] and inputA[1] == outputA[1]:
+        if inputA[0] == outputA[0] and int(inputA[1]) == int(outputA[1]):
             multi, refAllele, _, pi = ProcessVCFRecord(inputA)
             _, _, qual, po = ProcessVCFRecord(outputA)
             if multi == 1:
-                print >> val_fh, "B\t0\t%s\t%s" % (refAllele, pi)
+                print >> val_fh, "B\t0\t%s\t%d\t%s\t%s" % (inputA[0], int(inputA[1]), refAllele, pi)
             elif pi == po:
-                print >> val_fh, "M\t%s\t%s\t%s\t%s" % (qual, refAllele, pi, po)
+                print >> val_fh, "M\t%s\t%s\t%d\t%s\t%s\t%s" % (qual, inputA[0], int(inputA[1]), refAllele, pi, po)
             else:
-                print >> val_fh, "X\t%s\t%s\t%s\t%s" % (qual, refAllele, pi, po)
+                print >> val_fh, "X\t%s\t%s\t%d\t%s\t%s\t%s" % (qual, inputA[0], int(inputA[1]), refAllele, pi, po)
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
                 except StopIteration:
                     break
-                if inputA[0] != preChr or inputA[1] != prePos:
-                    preChr = inputA[0]; prePos = inputA[1]
+                if inputA[0] != preChr or int(inputA[1]) != prePos:
+                    preChr = inputA[0]; prePos = int(inputA[1])
                     break;
-        elif inputA[0] == outputA[0] and inputA[1] > outputA[1]:
+        elif inputA[0] == outputA[0] and int(inputA[1]) > int(outputA[1]):
             continue
         else:
             print >> sys.stderr, "Should not reach here:\n%s\n%s" % (inputA, outputA)
