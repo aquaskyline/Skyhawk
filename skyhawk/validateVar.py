@@ -62,9 +62,9 @@ def CheckCmdExist(cmd):
 def Run(args):
     # --------------------------------------- Parameter check
     basedir = os.path.dirname(__file__)
-    GTBin = CheckFileExist(basedir + "../dataPrepScripts/GetTruth.py")
-    CTSBin = CheckFileExist(basedir + "../dataPrepScripts/CreateTensorSites.py")
-    VVBin = CheckFileExist(basedir + "clairvoyante_test.py")
+    GTBin = CheckFileExist(basedir + "/../dataPrepScripts/GetTruth.py")
+    CTSBin = CheckFileExist(basedir + "/../dataPrepScripts/CreateTensorSites.py")
+    VVBin = CheckFileExist(basedir + "/clairvoyante_test.py")
     pypyBin = CheckCmdExist(args.pypy)
     if pypyBin == -1 : pypyBin = "python"
     samtoolsBin = CheckCmdExist(args.samtools)
