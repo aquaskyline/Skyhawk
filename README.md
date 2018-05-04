@@ -21,6 +21,7 @@ With the increasing throughput and reliability of sequencing technologies in the
 
 ## Prerequisition
 ### Basics
+Skyhawk requires Python 2.7.  
 Make sure you have Tensorflow ≥ 1.0.0 installed, the following commands install the lastest CPU version of Tensorflow:  
 
 ```shell
@@ -78,7 +79,7 @@ tar -xf testingData.tar
 
 ```shell
 python ./skyhawk/validateVar.py \
-       --chkpnt_fn ./trainedModels/fullv3-illumina-novoalign-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200
+       --chkpnt_fn ./trainedModels/illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200
        --ref_fn ../testingData/chr21/chr21.fa
        --bam_fn ../testingData/chr21/chr21.bam
        --vcf_fn ../testingData/chr21/chr21.vcf
@@ -130,16 +131,21 @@ Validation result | Skyhawk Quality | Chromosome | Position | Reference Allele |
 The trained models are in the `trainedModels/` folder.  
 
 
-Folder | Tech | Aligner | Ref | Sample |
---- |:---:|:---:|:---:|:---:|
-`fullv3-illumina-novoalign-hg001+hg002+hg003+hg004+hg005-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143+NA24631 |
-`fullv3-illumina-novoalign-hg001+hg002+hg003+hg004+hg005-hg19` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg19 | NA12878+NA24385+NA24149+NA24143+NA24631 |
-`fullv3-illumina-novoalign-hg001+hg002+hg003+hg004-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143 |
-`fullv3-illumina-novoalign-hg001+hg002-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878+NA24385 |
-`fullv3-illumina-novoalign-hg001-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA12878 |
-`fullv3-illumina-novoalign-hg002-hg38` | Illumina HiSeq2500<sup>1</sup> | Nonoalign 3.02.07 | hg38 | NA24385 |
-
-<sup>1</sup> Also using Illumina TruSeq (LT) DNA PCR-Free Sample Prep Kits, *Zook et al. Extensive sequencing of seven human genomes to characterize benchmark reference materials. 2016*  
+Folder | Tech | LibPrep | Aligner | Ref | Sample |
+--- |:---:|:---:|:---:|:---:| :---: |
+`illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143+NA24631 |
+`illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg19` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg19 | NA12878+NA24385+NA24149+NA24143+NA24631 |
+`illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143 |
+`illumina-novoalign-2500-tspcrfree-hg001+hg002-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385 |
+`illumina-novoalign-2500-tspcrfree-hg001-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878 |
+`illumina-novoalign-2500-tspcrfree-hg002-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA24385 |
+`illumina-isaac-2000-tspcrfree-hg001-hg19` | Illumina HiSeq2000 | TruSeq PCR-free | Isaac | hg19 | NA12878 |
+`illumina-isaac-4000-tsnano550-hg001-hg19` | Illumina HiSeq4000 | TruSeq Nano 550 | Isaac | hg19 | NA12878 |
+`illumina-isaac-x-tsnano2.5-hg001-hg19` | Illumina HiSeq X | TruSeq Nano 2.5 | Isaac | hg19 | NA12878 |
+`illumina-isaac-ns500-tsnano350-hg001-hg19` | Illumina NextSeq 500 | TruSeq Nano 350 | Isaac | hg19 | NA12878 |
+`illumina-isaac-s1xp-tsnano350-hg001-hg38` | Illumina NovaSeq S1xp | TruSeq Nano 350 | Isaac | hg38 | NA12878 |
+`illumina-isaac-s2-nextraflex-hg001-hg38` | Illumina NovaSeq S2 | TruSeq Nextera Flex | Isaac | hg38 | NA12878 |
+`illumina-isaac-s4-nextraflex-hg001-hg38` | Illumina NovoSeq S4 | TruSeq Nextera Flex | Isaac | hg38 | NA12878 |
 
 <sup>\*</sup> Each folder contains one or more models. Each model contains three files suffixed `data-00000-of-00001`, `index` and `meta`, respectively. Only the prefix is needed when using the model with Clairvoyante. Using the prefix `learningRate1e-3.epoch999.learningRate1e-4.epoch1499` as an example, it means that the model has trained for 1000 epochs at learning rate 1e<sup>-3</sup>, then another 500 epochs at learning rate 1e<sup>-4</sup>. Lambda for L2 regularization was set the same as learning rate.  
 
