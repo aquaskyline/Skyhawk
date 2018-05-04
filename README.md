@@ -58,7 +58,7 @@ sudo apt-get install pypy pypy-dev
 wget https://bootstrap.pypa.io/get-pip.py
 sudo pypy get-pip.py
 sudo pypy -m pip install blosc
-sudo pypy -m pip install intervaltre
+sudo pypy -m pip install intervaltree
 ```
 
 Skywawk will fallback to using python if pypy intepreter doesn't exist. It's OK to run Skyhawk without pypy, albeit it runs a few times slower (13 minutes vs. 3 minutes on 50k variants).  
