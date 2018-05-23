@@ -149,6 +149,8 @@ Folder | Tech | LibPrep | Aligner | Ref | Sample |
 
 <sup>\*</sup> Each folder contains one or more models. Each model contains three files suffixed `data-00000-of-00001`, `index` and `meta`, respectively. Only the prefix is needed when using the model with Clairvoyante. Using the prefix `learningRate1e-3.epoch999.learningRate1e-4.epoch1499` as an example, it means that the model has trained for 1000 epochs at learning rate 1e<sup>-3</sup>, then another 500 epochs at learning rate 1e<sup>-4</sup>. Lambda for L2 regularization was set the same as learning rate.  
 
+* Experiments in issues (#4) show that, using the Novoalign models for BWA alignments will increase the accuracy of Skyhawk.
+
 ***
 
 ## About the Testing Data
