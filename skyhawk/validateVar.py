@@ -176,11 +176,14 @@ def Run(args):
     # --------------------------------------- Result analysis section
     def ProcessVCFRecord(row):
         last = row[-1]
-        varType = last.split(":")[0].replace("/","|").replace(".","0").split("|")
-        p1, p2 = varType
-        p1 = int(p1)
-        p2 = int(p2)
-        p1, p2 = (p1, p2) if p1 < p2 else (p2, p1)
+        p1, p2 = 0, 0
+        if last.split(":")[0].find("/") != -1 or last.split(":")[0].find("|") != -1:
+            varType = last.split(":")[0].replace("/","|").replace(".","0").split("|")
+            p1, p2 = [int(x) for x in varType]
+            p1, p2 = (p1, p2) if p1 < p2 else (p2, p1)
+        else:
+            varType = last.split(":")[0].replace(".","0")
+            p1 = p2 = int(varType)
         multi = 0
         if p1 == 1 and p2 == 2:
             multi = 1

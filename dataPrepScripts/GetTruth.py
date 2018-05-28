@@ -65,14 +65,16 @@ def OutputVariant( args ):
             if int(row[1]) < ctgStart or int(row[1]) > ctgEnd:
                 continue
         last = row[-1]
-        varType = last.split(":")[0].replace("/","|").replace(".","0").split("|")
-        p1, p2 = varType
-        p1 = int(p1)
-        p2 = int(p2)
-        p1, p2 = (p1, p2) if p1 < p2 else (p2, p1)
+        p1, p2 = 0, 0
+        if last.split(":")[0].find("/") != -1 or last.split(":")[0].find("|") != -1:
+            varType = last.split(":")[0].replace("/","|").replace(".","0").split("|")
+            p1, p2 = [int(x) for x in varType]
+            p1, p2 = (p1, p2) if p1 < p2 else (p2, p1)
+        else:
+            varType = last.split(":")[0].replace(".","0")
+            p1 = p2 = int(varType)
         if p1 == 1 and p2 == 2 and row[4].find(",") != -1:
-            p1 = 0
-            p2 = 1
+            p1, p2 = 0, 1
             gts = row[4].split(",")
             shortestLen = 99
             shortestGT = ""
