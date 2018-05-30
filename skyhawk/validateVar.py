@@ -74,6 +74,7 @@ def Run(args):
     chkpnt_fn = CheckFileExist(args.chkpnt_fn, sfx=".meta")
     bam_fn = CheckFileExist(args.bam_fn)
     ref_fn = CheckFileExist(args.ref_fn)
+    fai_fn = CheckFileExist(args.ref_fn + ".fai")
     vcf_fn = CheckFileExist(args.vcf_fn)
     val_fn = args.val_fn
     sampleName = args.sampleName
@@ -272,7 +273,7 @@ if __name__ == "__main__":
     parser.add_argument('--outputVCF_fn', type=str, default = None,
             help="Output Clairvoyante variant calls into a VCF file")
 
-    parser.add_argument('--allChrom', type=param.str2bool, nargs='?', const=False, default=False,
+    parser.add_argument('--allChrom', type=param.str2bool, nargs='?', const=True, default=False,
             help="Work on all chromosomes, default only on chr{1..22,X,Y} and {1..22,X,Y}")
 
     parser.add_argument('--sampleName', type=str, default = "SAMPLE",
