@@ -211,7 +211,7 @@ def Run(args):
     inputA = next(iterAllInputs).strip().split()
     for output in iterAllOutputs:
         outputA = output.strip().split()
-        print >> sys.stderr, "0", inputA[0], inputA[1], outputA[0], outputA[1]
+        #print >> sys.stderr, "0", inputA[0], inputA[1], outputA[0], outputA[1]
         while inputA != -1 and (inputA[0] != outputA[0] or int(inputA[1]) < int(outputA[1])):
             multi, refAllele, _, pi = ProcessVCFRecord(inputA)
             if multi == 1:
@@ -221,7 +221,7 @@ def Run(args):
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
-                    print >> sys.stderr, "1", inputA[0], inputA[1], outputA[0], outputA[1]
+                    #print >> sys.stderr, "1", inputA[0], inputA[1], outputA[0], outputA[1]
                 except StopIteration:
                     inputA = -1
                     break
@@ -243,7 +243,7 @@ def Run(args):
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
-                    print >> sys.stderr, "2", inputA[0], inputA[1], outputA[0], outputA[1]
+                    #print >> sys.stderr, "2", inputA[0], inputA[1], outputA[0], outputA[1]
                 except StopIteration:
                     inputA = -1
                     break
