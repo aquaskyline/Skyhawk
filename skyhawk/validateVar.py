@@ -143,6 +143,7 @@ def Run(args):
     inputs = []
     outputs = []
     previousCtg = ""
+    flag = 1
     vcf_fh = subprocess.Popen(shlex.split("gzip -dcf %s" % (vcf_fn) ), stdout=subprocess.PIPE, bufsize=8388608)
     for row in vcf_fh.stdout:
         rowA = row.strip().split()
@@ -150,10 +151,12 @@ def Run(args):
             headers.append(row)
             continue
         if rowA[0] != previousCtg:
-            if allChrom == False:
+            if args.allChrom == False:
                 if previousCtg not in chroms:
-                    pass
-            elif len(inputs) != 0:
+                    flag = 0
+                else:
+                    flag = 1
+            if flag == 1 and len(inputs) != 0:
                 print >> sys.stderr, "Working on chromosome: %s" % (previousCtg)
                 RunOnACtg(previousCtg, inputs, outputs)
                 for item in outputs:
@@ -163,10 +166,12 @@ def Run(args):
             previousCtg = rowA[0]
         inputs.append(row)
         allInputs.append(row)
-    if allChrom == False:
+    if args.allChrom == False:
         if previousCtg not in chroms:
-            pass
-    elif len(inputs) != 0:
+            flag = 0
+        else:
+            flag = 1
+    if flag == 1 and len(inputs) != 0:
         print >> sys.stderr, "Working on chromosome: %s" % (previousCtg)
         RunOnACtg(previousCtg, inputs, outputs)
         for item in outputs:
