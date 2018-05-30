@@ -145,7 +145,7 @@ def Run(args):
     outputs = []
     previousCtg = ""
     flag = 1
-    vcf_fh = subprocess.Popen(shlex.split("gzip -dcf %s" % (vcf_fn) ), stdout=subprocess.PIPE, bufsize=8388608)
+    vcf_fh = subprocess.Popen(shlex.split("gzip -dcf %s" % (vcf_fn) ), stdout=subprocess.PIPE, bufsize=65536)
     for row in vcf_fh.stdout:
         rowA = row.strip().split()
         if rowA[0][0] == "#":
@@ -204,6 +204,7 @@ def Run(args):
             multi = 1
         return (multi, row[3], row[5], "\t".join([row[4], "/".join([str(p1), str(p2)])]))
 
+    fullstop = 0
     preChr = prePos = ""
     val_fh = open(val_fn, "w")
     iterAllOutputs = iter(allOutputs)
@@ -211,7 +212,7 @@ def Run(args):
     inputA = next(iterAllInputs).strip().split()
     for output in iterAllOutputs:
         outputA = output.strip().split()
-        while inputA[0] != outputA[0] or int(inputA[1]) < int(outputA[1]):
+        while fullstop == 0 and (inputA[0] != outputA[0] or int(inputA[1]) < int(outputA[1])):
             multi, refAllele, _, pi = ProcessVCFRecord(inputA)
             if multi == 1:
                 print >> val_fh, "B\t0\t%s\t%d\t%s\t%s" % (inputA[0], int(inputA[1]), refAllele, pi)
@@ -221,6 +222,7 @@ def Run(args):
                 try:
                     inputA = next(iterAllInputs).strip().split()
                 except StopIteration:
+                    fullstop = 1
                     break
                 if inputA[0] != preChr or int(inputA[1]) != prePos:
                     preChr = inputA[0]; prePos = int(inputA[1])
@@ -238,6 +240,7 @@ def Run(args):
                 try:
                     inputA = next(iterAllInputs).strip().split()
                 except StopIteration:
+                    fullstop = 1
                     break
                 if inputA[0] != preChr or int(inputA[1]) != prePos:
                     preChr = inputA[0]; prePos = int(inputA[1])
