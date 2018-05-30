@@ -10,6 +10,8 @@ import signal
 import random
 import time
 
+chroms = {"chr"+str(i) for i in range(1,23)}.union(str(i) for i in range(1,23)).union(["X","Y","chrX","chrY"])
+
 class InstancesClass(object):
     def __init__(self):
         self.init()
@@ -148,7 +150,10 @@ def Run(args):
             headers.append(row)
             continue
         if rowA[0] != previousCtg:
-            if len(inputs) != 0:
+            if allChrom == False:
+                if previousCtg not in chroms:
+                    pass
+            elif len(inputs) != 0:
                 print >> sys.stderr, "Working on chromosome: %s" % (previousCtg)
                 RunOnACtg(previousCtg, inputs, outputs)
                 for item in outputs:
@@ -158,10 +163,14 @@ def Run(args):
             previousCtg = rowA[0]
         inputs.append(row)
         allInputs.append(row)
-    print >> sys.stderr, "Working on chromosome: %s" % (previousCtg)
-    RunOnACtg(previousCtg, inputs, outputs)
-    for item in outputs:
-        allOutputs.append(item)
+    if allChrom == False:
+        if previousCtg not in chroms:
+            pass
+    elif len(inputs) != 0:
+        print >> sys.stderr, "Working on chromosome: %s" % (previousCtg)
+        RunOnACtg(previousCtg, inputs, outputs)
+        for item in outputs:
+            allOutputs.append(item)
     # ---------------------------------------
 
     # --------------------------------------- Output Clairvoyante calls to VCF
@@ -257,6 +266,9 @@ if __name__ == "__main__":
 
     parser.add_argument('--outputVCF_fn', type=str, default = None,
             help="Output Clairvoyante variant calls into a VCF file")
+
+    parser.add_argument('--allChrom', type=param.str2bool, nargs='?', const=False, default=False,
+            help="Work on all chromosomes, default only on chr{1..22,X,Y} and {1..22,X,Y}")
 
     parser.add_argument('--sampleName', type=str, default = "SAMPLE",
             help="Define the sample name to be shown in the VCF file")
