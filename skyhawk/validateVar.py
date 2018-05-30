@@ -204,7 +204,6 @@ def Run(args):
             multi = 1
         return (multi, row[3], row[5], "\t".join([row[4], "/".join([str(p1), str(p2)])]))
 
-    fullstop = 0
     preChr = prePos = ""
     val_fh = open(val_fn, "w")
     iterAllOutputs = iter(allOutputs)
@@ -212,18 +211,23 @@ def Run(args):
     inputA = next(iterAllInputs).strip().split()
     for output in iterAllOutputs:
         outputA = output.strip().split()
-        while fullstop == 0 and (inputA[0] != outputA[0] or int(inputA[1]) < int(outputA[1])):
+        print >> sys.stderr, "0", inputA[0], inputA[1], outputA[0], outputA[1]
+        while inputA != -1 and (inputA[0] != outputA[0] or int(inputA[1]) < int(outputA[1])):
             multi, refAllele, _, pi = ProcessVCFRecord(inputA)
             if multi == 1:
                 print >> val_fh, "B\t0\t%s\t%d\t%s\t%s" % (inputA[0], int(inputA[1]), refAllele, pi)
             else:
-                print >> val_fh, "S\t0\t%s\t%d\t%s\t%s" % (inputA[0], int(inputA[1]),refAllele, pi)
+                print >> val_fh, "S\t0\t%s\t%d\t%s\t%s" % (inputA[0], int(inputA[1]), refAllele, pi)
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
+                    print >> sys.stderr, "1", inputA[0], inputA[1], outputA[0], outputA[1]
                 except StopIteration:
-                    fullstop = 1
+                    inputA = -1
                     break
+                if inputA[0] == preChr and int(inputA[1]) < prePos:
+                    print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited.\n%s\n%s" % (inputA, outputA)
+                    sys.exit(-1)
                 if inputA[0] != preChr or int(inputA[1]) != prePos:
                     preChr = inputA[0]; prePos = int(inputA[1])
                     break;
@@ -239,16 +243,20 @@ def Run(args):
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
+                    print >> sys.stderr, "2", inputA[0], inputA[1], outputA[0], outputA[1]
                 except StopIteration:
-                    fullstop = 1
+                    inputA = -1
                     break
+                if inputA[0] == preChr and int(inputA[1]) < prePos:
+                    print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited.\n%s\n%s" % (inputA, outputA)
+                    sys.exit(-1)
                 if inputA[0] != preChr or int(inputA[1]) != prePos:
                     preChr = inputA[0]; prePos = int(inputA[1])
                     break;
-        elif inputA[0] == outputA[0] and int(inputA[1]) > int(outputA[1]):
-            continue
+        elif inputA == -1:
+            break
         else:
-            print >> sys.stderr, "Should not reach here:\n%s\n%s" % (inputA, outputA)
+            print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited.\n%s\n%s" % (inputA, outputA)
             sys.exit(-1)
     # ---------------------------------------
 
