@@ -83,7 +83,7 @@ Skywawk will fallback to using python if pypy intepreter doesn't exist. It's OK 
 ### Download testing dataset
 
 ```shell
-wget 'https://www.dropbox.com/s/0s26oru0hut9edc/testingData.tar.gz'
+wget 'http://www.bio8.cs.hku.hk/testingData.tar'
 tar -xf testingData.tar
 ```
 
