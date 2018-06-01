@@ -1,5 +1,5 @@
 # Skyhawk: An Artificial Neural Network-based discriminator for validating clinically significant genomic variants
-[License: NPOSL-3.0](https://opensource.org/licenses/NOSL3.0)  
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)  
 Contact: Ruibang Luo  
 Email: rbluo@cs.hku.hk  
 
@@ -10,6 +10,13 @@ Email: rbluo@cs.hku.hk
 git clone https://github.com/aquaskyline/Skyhawk.git
 cd Skyhawk
 curl http://www.bio8.cs.hku.hk/skyhawkModels.tbz | tar -jxf -
+```
+
+## Quick Start after Installation
+```shell
+cd skyhawk/testingData
+python ../skyhawk/validateVar.py --chkpnt_fn ../trainedModels/illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200 --ref_fn chr21.fa.gz --bam_fn chr21:14069696-14269696.bam --vcf_fn chr21:14069696-14269696.vcf.gz --val_fn validation.out
+less validation.out
 ```
 
 ***
@@ -149,7 +156,7 @@ Folder | Tech | LibPrep | Aligner | Ref | Sample |
 
 <sup>\*</sup> Each folder contains one or more models. Each model contains three files suffixed `data-00000-of-00001`, `index` and `meta`, respectively. Only the prefix is needed when using the model with Clairvoyante. Using the prefix `learningRate1e-3.epoch999.learningRate1e-4.epoch1499` as an example, it means that the model has trained for 1000 epochs at learning rate 1e<sup>-3</sup>, then another 500 epochs at learning rate 1e<sup>-4</sup>. Lambda for L2 regularization was set the same as learning rate.  
 
-* Experiments in issues (#4) show that, using the Novoalign models for BWA alignments will increase the accuracy of Skyhawk.
+* Experiments in issue (#4) show that using the Novoalign models for BWA alignments will increase the accuracy of Skyhawk.  
 
 ***
 
@@ -162,4 +169,4 @@ The testing dataset 'testingData.tar' includes:
 
 ## Limitations
 ### On variants with two alternative alleles (GT: 1/2)
-Skyhawk doesn't support validating variants with more than one alternative allele. Skyhawk will mark the variants with multiple alleles as type 'B' in the results, suggesting these variants were not validated by Skyhawk and require manual validation. Although we will further extend the Skyhawk to support genome variants with multiple alternative alleles, as there are just few number of them and they are more error-prone, we suggest we always review these variants manually.
+Skyhawk doesn't support validating variants with more than one alternative allele. Skyhawk will mark the variants with multiple alleles as type 'B' in the results, suggesting these variants were not validated by Skyhawk and require manual validation. Although we will further extend the Skyhawk to support genome variants with multiple alternative alleles, as there are just few number of them and they are more error-prone, we suggest we always review these variants manually.  
