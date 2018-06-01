@@ -15,7 +15,12 @@ curl http://www.bio8.cs.hku.hk/skyhawkModels.tbz | tar -jxf -
 ## Quick Start after Installation
 ```shell
 cd skyhawk/testingData
-python ../skyhawk/validateVar.py --chkpnt_fn ../trainedModels/illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200 --ref_fn chr21.fa.gz --bam_fn chr21:14069696-14269696.bam --vcf_fn chr21:14069696-14269696.vcf.gz --val_fn validation.out
+python ../skyhawk/validateVar.py \
+       --chkpnt_fn ../trainedModels/illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200 \
+       --ref_fn chr21.fa.gz \
+       --bam_fn chr21:14069696-14269696.bam \
+       --vcf_fn chr21:14069696-14269696.vcf.gz \
+       --val_fn validation.out
 less validation.out
 ```
 
