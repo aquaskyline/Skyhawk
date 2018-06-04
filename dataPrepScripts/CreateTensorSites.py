@@ -165,6 +165,7 @@ def OutputAlnTensor(args):
     #    signal.alarm(60)
 
     previousPos = 0; depthCap = 0
+    lastChr = ""; lastPos = -1
     for l in p2:
         l = l.split()
         if l[0][0] == "@":
@@ -178,6 +179,14 @@ def OutputAlnTensor(args):
         SEQ = l[9]
         refPos = POS
         queryPos = 0
+
+        if RNAME != lastChr:
+            lastChr = RNAME
+            lastPos = -1
+        elif lastPos <= POS:
+            lastPos = POS
+        else:
+            continue
 
         endToCenter = {}
         activeSet = set()
@@ -206,14 +215,14 @@ def OutputAlnTensor(args):
             if m.group(2) == "S":
                 queryPos += advance
             if m.group(2) in ("M", "=", "X"):
-                matches = []
                 for i in xrange(advance):
-                    matches.append( (refPos, SEQ[queryPos]) )
                     if refPos in beginToEnd:
                         rEnd, rCenter = beginToEnd[refPos]
                         if rCenter not in activeSet:
                             endToCenter[rEnd] = rCenter
                             activeSet.add(rCenter)
+                            #if rCenter == 133300025 and rCenter not in centerToAln.keys():
+                            #    print >> sys.stderr, "ins", l, RNAME, POS, CIGAR
                             centerToAln.setdefault(rCenter, [])
                             centerToAln[rCenter].append([])
                     for center in list(activeSet):
@@ -225,7 +234,6 @@ def OutputAlnTensor(args):
                         activeSet.remove(center)
                     refPos += 1
                     queryPos += 1
-                del matches
 
             elif m.group(2) == "I":
                 queryAdv = 0
@@ -255,15 +263,17 @@ def OutputAlnTensor(args):
                         activeSet.remove(center)
                     refPos += 1
 
-        if depthCap == 0:
+        if depthCap == 0: # Run once at each position
             for center in centerToAln.keys():
                 if center + (param.flankingBaseNum+1) < POS:
-                    l =  GenerateTensor(args.ctgName, centerToAln[center], center, refSeq)
-                    if l != None:
-                        tensor_fp.stdin.write(l)
+                    o =  GenerateTensor(args.ctgName, centerToAln[center], center, refSeq)
+                    if o != None:
+                        tensor_fp.stdin.write(o)
                         tensor_fp.stdin.write("\n")
                     availableSlots += sum(len(i) for i in centerToAln[center])
                     #print >> sys.stderr, "POS %d: remaining slots %d" % (center, availableSlots)
+                    #if center == 133300025:
+                    #    print >> sys.stderr, "del", l, RNAME, POS, CIGAR
                     del centerToAln[center]
 
     for center in centerToAln.keys():
