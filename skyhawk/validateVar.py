@@ -221,12 +221,13 @@ def Run(args):
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
-                    #print >> sys.stderr, "1", inputA[0], inputA[1], outputA[0], outputA[1]
+                    if args.debug == 1:
+                        print >> sys.stderr, "1", inputA[0], inputA[1], outputA[0], outputA[1]
                 except StopIteration:
                     inputA = -1
                     break
                 if inputA[0] == preChr and int(inputA[1]) < prePos:
-                    print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited.\n%s\n%s" % (inputA, outputA)
+                    print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited (1).\n%s\n%s" % (inputA, outputA)
                     sys.exit(-1)
                 if inputA[0] != preChr or int(inputA[1]) != prePos:
                     preChr = inputA[0]; prePos = int(inputA[1])
@@ -243,12 +244,13 @@ def Run(args):
             while True:
                 try:
                     inputA = next(iterAllInputs).strip().split()
-                    #print >> sys.stderr, "2", inputA[0], inputA[1], outputA[0], outputA[1]
+                    if args.debug == 1:
+                        print >> sys.stderr, "2", inputA[0], inputA[1], outputA[0], outputA[1]
                 except StopIteration:
                     inputA = -1
                     break
                 if inputA[0] == preChr and int(inputA[1]) < prePos:
-                    print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited.\n%s\n%s" % (inputA, outputA)
+                    print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited (2).\n%s\n%s" % (inputA, outputA)
                     sys.exit(-1)
                 if inputA[0] != preChr or int(inputA[1]) != prePos:
                     preChr = inputA[0]; prePos = int(inputA[1])
@@ -256,7 +258,7 @@ def Run(args):
         elif inputA == -1:
             break
         else:
-            print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited.\n%s\n%s" % (inputA, outputA)
+            print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited (3).\n%s\n%s" % (inputA, outputA)
             sys.exit(-1)
     # ---------------------------------------
 
@@ -285,7 +287,7 @@ if __name__ == "__main__":
             help="Output Clairvoyante variant calls into a VCF file")
 
     parser.add_argument('--allChrom', type=param.str2bool, nargs='?', const=True, default=False,
-            help="Work on all chromosomes, default only on chr{1..22,X,Y} and {1..22,X,Y}")
+            help="Work on all chromosomes, default only on chr{1..22,X,Y} and {1..22,X,Y}, default: %(default)s")
 
     parser.add_argument('--sampleName', type=str, default = "SAMPLE",
             help="Define the sample name to be shown in the VCF file")
@@ -301,6 +303,9 @@ if __name__ == "__main__":
 
     parser.add_argument('--pypy', type=str, default="pypy",
             help="Path to the 'pypy', default: %(default)s")
+
+    parser.add_argument('--debug', type=param.str2bool, nargs='?', const=True, default=False,
+            help="Enable the debug mode and be verbose, default: %(default)s")
 
     args = parser.parse_args()
 
