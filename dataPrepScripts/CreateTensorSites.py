@@ -182,7 +182,7 @@ def OutputAlnTensor(args):
 
         if RNAME != lastChr:
             lastChr = RNAME
-            lastPos = -1
+            lastPos = POS
         elif lastPos <= POS:
             lastPos = POS
         else:

@@ -204,13 +204,22 @@ def Run(args):
             multi = 1
         return (multi, row[3], row[5], "\t".join([row[4], "/".join([str(p1), str(p2)])]))
 
-    preChr = prePos = ""
+    preInChr = preInPos = ""
+    preOutChr = ""; preOutPos = -1
     val_fh = open(val_fn, "w")
     iterAllOutputs = iter(allOutputs)
     iterAllInputs = iter(allInputs)
     inputA = next(iterAllInputs).strip().split()
     for output in iterAllOutputs:
         outputA = output.strip().split()
+        if preOutChr != outputA[0]:
+            preOutChr = outputA[0]
+            preOutPos = outputA[1]
+        elif preOutPos <= outputA[1]:
+            preOutPos = outputA[1]
+        else:
+            print >> sys.stderr, "Skipped position %s:%s in the output" % (outputA[0], outputA[1])
+            continue
         #print >> sys.stderr, "0", inputA[0], inputA[1], outputA[0], outputA[1]
         while inputA != -1 and (inputA[0] != outputA[0] or int(inputA[1]) < int(outputA[1])):
             multi, refAllele, _, pi = ProcessVCFRecord(inputA)
@@ -226,11 +235,11 @@ def Run(args):
                 except StopIteration:
                     inputA = -1
                     break
-                if inputA[0] == preChr and int(inputA[1]) < prePos:
+                if inputA[0] == preInChr and int(inputA[1]) < preInPos:
                     print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited (1).\n%s\n%s" % (inputA, outputA)
                     sys.exit(-1)
-                if inputA[0] != preChr or int(inputA[1]) != prePos:
-                    preChr = inputA[0]; prePos = int(inputA[1])
+                if inputA[0] != preInChr or int(inputA[1]) != preInPos:
+                    preInChr = inputA[0]; preInPos = int(inputA[1])
                     break;
         if inputA[0] == outputA[0] and int(inputA[1]) == int(outputA[1]):
             multi, refAllele, _, pi = ProcessVCFRecord(inputA)
@@ -249,11 +258,11 @@ def Run(args):
                 except StopIteration:
                     inputA = -1
                     break
-                if inputA[0] == preChr and int(inputA[1]) < prePos:
+                if inputA[0] == preInChr and int(inputA[1]) < preInPos:
                     print >> sys.stderr, "Please make sure your VCF input is sorted. Skyhawk exited (2).\n%s\n%s" % (inputA, outputA)
                     sys.exit(-1)
-                if inputA[0] != preChr or int(inputA[1]) != prePos:
-                    preChr = inputA[0]; prePos = int(inputA[1])
+                if inputA[0] != preInChr or int(inputA[1]) != preInPos:
+                    preInChr = inputA[0]; preInPos = int(inputA[1])
                     break;
         elif inputA == -1:
             break
