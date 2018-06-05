@@ -204,7 +204,7 @@ def Run(args):
             multi = 1
         return (multi, row[3], row[5], "\t".join([row[4], "/".join([str(p1), str(p2)])]))
 
-    preInChr = preInPos = ""
+    preInChr = ""; preInPos = -1
     preOutChr = ""; preOutPos = -1
     val_fh = open(val_fn, "w")
     iterAllOutputs = iter(allOutputs)
@@ -214,9 +214,9 @@ def Run(args):
         outputA = output.strip().split()
         if preOutChr != outputA[0]:
             preOutChr = outputA[0]
-            preOutPos = outputA[1]
-        elif preOutPos <= outputA[1]:
-            preOutPos = outputA[1]
+            preOutPos = int(outputA[1])
+        elif preOutPos <= int(outputA[1]):
+            preOutPos = int(outputA[1])
         else:
             print >> sys.stderr, "Skipped position %s:%s in the output" % (outputA[0], outputA[1])
             continue
