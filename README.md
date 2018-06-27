@@ -91,14 +91,37 @@ tar -xf testingData.tar
 
 ```shell
 python ./skyhawk/validateVar.py \
-       --chkpnt_fn ./trainedModels/illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200
-       --ref_fn ../testingData/chr21/chr21.fa
-       --bam_fn ../testingData/chr21/chr21.bam
-       --vcf_fn ../testingData/chr21/chr21.vcf
-       --thread 4
+       --chkpnt_fn ./trainedModels/illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200 \
+       --ref_fn ../testingData/chr21/chr21.fa \
+       --bam_fn ../testingData/chr21/chr21.bam \
+       --vcf_fn ../testingData/chr21/chr21.vcf \
+       --thread 4 \
        --val_fn validationOutput.txt
 less -S validationOutput.txt
 ```
+### Speed up by running multiple chromosomes in parallel
+
+Skyhawk usually takes less than a minute to validate ten thousand variants. In clinical context, especially when using Whole Exome Sequencing, the number variants to be validated would seldom exceed ten thousand. But if you use Skyhawk on million of variants for general variant filtering, you will need to split the run into chromosomes and run them in parallel.  
+
+```shell
+# Index the input VCF for random retrival
+bgzip input.vcf
+tabix -fp vcf input.vcf.gz
+# Split the input VCF into chromosomes, please use appropriate chromosome names (w/ or w/o the "chr" prefix)
+for i in {1..22} X Y; do tabix -pvcf input.vcf.gz chr$i > chr$i.vcf; done
+# Run validateVar.py in parallel
+for i in {1..22} X Y; do \
+python ./skyhawk/validateVar.py \
+       --chkpnt_fn ./trainedModels/illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38/learningRate1e-3.epoch100.learningRate1e-4.epoch200 \
+       --ref_fn ../hg38.fa \
+       --bam_fn ../aln.bam \
+       --vcf_fn chr$i.vcf \
+       --thread 4 \
+       --val_fn chr$i.out.txt &\true;
+done
+```
+
+This will speed up Skyhawk to less than an hour for 3.5 million variants. 
 
 ***
 
@@ -145,19 +168,19 @@ The trained models are in the `trainedModels/` folder.
 
 Folder | Tech | LibPrep | Aligner | Ref | Sample |
 --- |:---:|:---:|:---:|:---:| :---: |
-`illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143+NA24631 |
-`illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004+hg005-hg19` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg19 | NA12878+NA24385+NA24149+NA24143+NA24631 |
-`illumina-novoalign-2500-tspcrfree-hg001+hg002+hg003+hg004-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149+NA24143 |
-`illumina-novoalign-2500-tspcrfree-hg001+hg002-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385 |
-`illumina-novoalign-2500-tspcrfree-hg001-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878 |
-`illumina-novoalign-2500-tspcrfree-hg002-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA24385 |
-`illumina-isaac-2000-tspcrfree-hg001-hg19` | Illumina HiSeq2000 | TruSeq PCR-free | Isaac | hg19 | NA12878 |
-`illumina-isaac-4000-tsnano550-hg001-hg19` | Illumina HiSeq4000 | TruSeq Nano 550 | Isaac | hg19 | NA12878 |
-`illumina-isaac-x-tsnano2.5-hg001-hg19` | Illumina HiSeq X | TruSeq Nano 2.5 | Isaac | hg19 | NA12878 |
-`illumina-isaac-ns500-tsnano350-hg001-hg19` | Illumina NextSeq 500 | TruSeq Nano 350 | Isaac | hg19 | NA12878 |
-`illumina-isaac-s1xp-tsnano350-hg001-hg38` | Illumina NovaSeq S1xp | TruSeq Nano 350 | Isaac | hg38 | NA12878 |
-`illumina-isaac-s2-nextraflex-hg001-hg38` | Illumina NovaSeq S2 | TruSeq Nextera Flex | Isaac | hg38 | NA12878 |
-`illumina-isaac-s4-nextraflex-hg001-hg38` | Illumina NovoSeq S4 | TruSeq Nextera Flex | Isaac | hg38 | NA12878 |
+`illumina-novoalign-2500-tspcrfree-`<br>`hg001+hg002+hg003+hg004+hg005-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149<br>+NA24143+NA24631 |
+`illumina-novoalign-2500-tspcrfree-`<br>`hg001+hg002+hg003+hg004+hg005-hg19` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg19 | NA12878+NA24385+NA24149<br>+NA24143+NA24631 |
+`illumina-novoalign-2500-tspcrfree-`<br>`hg001+hg002+hg003+hg004-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385+NA24149<br>+NA24143 |
+`illumina-novoalign-2500-tspcrfree-`<br>`hg001+hg002-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878+NA24385 |
+`illumina-novoalign-2500-tspcrfree-`<br>`hg001-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA12878 |
+`illumina-novoalign-2500-tspcrfree-`<br>`hg002-hg38` | Illumina HiSeq2500 | TruSeq PCR-free | Nonoalign 3.02.07 | hg38 | NA24385 |
+`illumina-isaac-2000-tspcrfree-`<br>`hg001-hg19` | Illumina HiSeq2000 | TruSeq PCR-free | Isaac | hg19 | NA12878 |
+`illumina-isaac-4000-tsnano550-`<br>`hg001-hg19` | Illumina HiSeq4000 | TruSeq Nano 550 | Isaac | hg19 | NA12878 |
+`illumina-isaac-x-tsnano2.5-`<br>`hg001-hg19` | Illumina HiSeq X | TruSeq Nano 2.5 | Isaac | hg19 | NA12878 |
+`illumina-isaac-ns500-tsnano350-`<br>`hg001-hg19` | Illumina NextSeq 500 | TruSeq Nano 350 | Isaac | hg19 | NA12878 |
+`illumina-isaac-s1xp-tsnano350-`<br>`hg001-hg38` | Illumina NovaSeq S1xp | TruSeq Nano 350 | Isaac | hg38 | NA12878 |
+`illumina-isaac-s2-nextraflex-`<br>`hg001-hg38` | Illumina NovaSeq S2 | TruSeq Nextera Flex | Isaac | hg38 | NA12878 |
+`illumina-isaac-s4-nextraflex-`<br>`hg001-hg38` | Illumina NovoSeq S4 | TruSeq Nextera Flex | Isaac | hg38 | NA12878 |
 
 <sup>\*</sup> Each folder contains one or more models. Each model contains three files suffixed `data-00000-of-00001`, `index` and `meta`, respectively. Only the prefix is needed when using the model with Clairvoyante. Using the prefix `learningRate1e-3.epoch999.learningRate1e-4.epoch1499` as an example, it means that the model has trained for 1000 epochs at learning rate 1e<sup>-3</sup>, then another 500 epochs at learning rate 1e<sup>-4</sup>. Lambda for L2 regularization was set the same as learning rate.  
 
